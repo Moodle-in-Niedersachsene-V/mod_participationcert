@@ -22,6 +22,8 @@ Maintained by **Moodle in Niedersachsen e. V.**
 - Page *Issued certificates* for teachers: name, date of issue, code, time of the last email,
   download, sending by email and deletion of single certificates, plus a button to send the
   certificates to all participants who meet the restrictions.
+- Completion rule *Participants must receive the certificate*: the activity is complete as soon
+  as the certificate is issued (first download or email).
 - Events for issuing, sending and deleting certificates.
 - Privacy API: export and deletion of issued certificates.
 - Backup, restore, duplication and course reset.
@@ -55,6 +57,12 @@ Maintained by **Moodle in Niedersachsen e. V.**
 3. Under *Restrict access*, add the conditions under which participants receive the certificate,
    for example *Activity completion* of the final activity.
 4. Optionally enable *Send certificate by email*.
+5. Under *Completion conditions*, choose *Add requirements* and *Participants must receive the
+   certificate* if the course progress should show who has the certificate.
+
+*Restrict access* decides when the certificate becomes available, for example from a date and time
+(*Date › from*). *Completion conditions* only decide when the activity counts as done. The
+*Set reminder in Timeline* option of the completion section is just a reminder, not a condition.
 
 Participants who meet the restrictions see the button *Download certificate* on the activity page.
 Teachers check layout and texts with *Preview certificate* on the same page.

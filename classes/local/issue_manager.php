@@ -100,6 +100,7 @@ class issue_manager {
             'context' => $context,
             'relateduserid' => $userid,
         ])->trigger();
+        self::update_completion($instance, $context, $userid);
         return $issue;
     }
 
@@ -151,6 +152,8 @@ class issue_manager {
             'context' => $context,
             'relateduserid' => $issue->userid,
         ])->trigger();
+        $instance = $DB->get_record('participationcert', ['id' => $issue->participationcertid], '*', MUST_EXIST);
+        self::update_completion($instance, $context, (int) $issue->userid);
     }
 
     /**
@@ -163,6 +166,29 @@ class issue_manager {
         global $DB;
 
         $DB->delete_records('participationcert_issues', ['participationcertid' => $instanceid]);
+    }
+
+    /**
+     * Recalculates the completion rule "certificate received" after a certificate was issued or deleted.
+     *
+     * @param stdClass $instance Instance record.
+     * @param context_module $context Module context.
+     * @param int $userid User id.
+     * @return void
+     */
+    private static function update_completion(stdClass $instance, context_module $context, int $userid): void {
+        global $CFG;
+        require_once($CFG->libdir . '/completionlib.php');
+
+        if (empty($instance->completionissued)) {
+            return;
+        }
+        $modinfo = get_fast_modinfo((int) $instance->course);
+        $cm = $modinfo->get_cm($context->instanceid);
+        $completion = new \completion_info($modinfo->get_course());
+        if ($completion->is_enabled($cm) == COMPLETION_TRACKING_AUTOMATIC) {
+            $completion->update_state($cm, COMPLETION_UNKNOWN, $userid);
+        }
     }
 
     /**

@@ -16,6 +16,7 @@
         <FIELD NAME="topics" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Contents of the course printed on the certificate"/>
         <FIELD NAME="topicsformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
         <FIELD NAME="emailcertificate" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Send the certificate by email once it is available"/>
+        <FIELD NAME="completionissued" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Completion rule: the certificate has been issued to the user"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>

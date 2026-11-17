@@ -42,7 +42,7 @@ class backup_participationcert_activity_structure_step extends backup_activity_s
     protected function define_structure() {
         $participationcert = new backup_nested_element('participationcert', ['id'], [
             'name', 'intro', 'introformat', 'certtitle', 'scope', 'topics', 'topicsformat', 'emailcertificate',
-            'timecreated', 'timemodified',
+            'completionissued', 'timecreated', 'timemodified',
         ]);
         $participationcert->set_source_table('participationcert', ['id' => backup::VAR_ACTIVITYID]);
         $participationcert->annotate_files('mod_participationcert', 'intro', null);

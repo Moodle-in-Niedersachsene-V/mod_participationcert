@@ -84,6 +84,30 @@ class mod_participationcert_mod_form extends moodleform_mod {
     }
 
     /**
+     * Adds the completion rule "certificate received".
+     *
+     * @return string[] Names of the added elements.
+     */
+    public function add_completion_rules() {
+        $mform = $this->_form;
+        $name = 'completionissued' . $this->get_suffix();
+        $mform->addElement('advcheckbox', $name, '', get_string('completionissued', 'participationcert'));
+        $mform->addHelpButton($name, 'completionissued', 'participationcert');
+        $mform->setDefault($name, 1);
+        return [$name];
+    }
+
+    /**
+     * Tells whether the completion rule "certificate received" is selected.
+     *
+     * @param array $data Submitted data.
+     * @return bool True when the rule is selected.
+     */
+    public function completion_rule_enabled($data) {
+        return !empty($data['completionissued' . $this->get_suffix()]);
+    }
+
+    /**
      * Loads the course contents into the editor field.
      *
      * @param array $defaultvalues Form defaults, passed by reference.

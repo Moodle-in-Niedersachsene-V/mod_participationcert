@@ -35,8 +35,9 @@ function participationcert_supports($feature) {
         case FEATURE_MOD_INTRO:
         case FEATURE_SHOW_DESCRIPTION:
         case FEATURE_BACKUP_MOODLE2:
-        case FEATURE_COMPLETION_TRACKS_VIEWS:
+        case FEATURE_COMPLETION_HAS_RULES:
             return true;
+        case FEATURE_COMPLETION_TRACKS_VIEWS:
         case FEATURE_GRADE_HAS_GRADE:
         case FEATURE_GROUPS:
         case FEATURE_GROUPINGS:
@@ -63,6 +64,7 @@ function participationcert_prepare_record(stdClass $data): stdClass {
     $data->certtitle = trim($data->certtitle ?? '');
     $data->scope = trim($data->scope ?? '');
     $data->emailcertificate = empty($data->emailcertificate) ? 0 : 1;
+    $data->completionissued = empty($data->completionissued) ? 0 : 1;
     $data->timemodified = time();
     return $data;
 }
@@ -112,6 +114,50 @@ function participationcert_delete_instance($id) {
     issue_manager::delete_all((int) $id);
     $DB->delete_records('participationcert', ['id' => $id]);
     return true;
+}
+
+/**
+ * Returns the course module information with the custom completion rule.
+ *
+ * @param stdClass $coursemodule Course module record.
+ * @return cached_cm_info|false Information for the course page, false if the instance is missing.
+ */
+function participationcert_get_coursemodule_info($coursemodule) {
+    global $DB;
+
+    $instance = $DB->get_record(
+        'participationcert',
+        ['id' => $coursemodule->instance],
+        'id, name, intro, introformat, completionissued'
+    );
+    if (!$instance) {
+        return false;
+    }
+    $result = new cached_cm_info();
+    $result->name = $instance->name;
+    if ($coursemodule->showdescription) {
+        $result->content = format_module_intro('participationcert', $instance, $coursemodule->id, false);
+    }
+    if ($coursemodule->completion == COMPLETION_TRACKING_AUTOMATIC) {
+        $result->customdata['customcompletionrules']['completionissued'] = $instance->completionissued;
+    }
+    return $result;
+}
+
+/**
+ * Returns the descriptions of the active custom completion rules for the course page.
+ *
+ * @param cm_info|stdClass $cm Course module with completion and customdata.
+ * @return string[] Descriptions.
+ */
+function mod_participationcert_get_completion_active_rule_descriptions($cm) {
+    if (empty($cm->customdata['customcompletionrules']) || $cm->completion != COMPLETION_TRACKING_AUTOMATIC) {
+        return [];
+    }
+    if (empty($cm->customdata['customcompletionrules']['completionissued'])) {
+        return [];
+    }
+    return [get_string('completionissued', 'participationcert')];
 }
 
 /**
