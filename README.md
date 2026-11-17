@@ -17,6 +17,8 @@ Maintained by **Moodle in Niedersachsen e. V.**
 - Participants download their certificate from the activity page. The first download issues it;
   date of issue and code stay the same for every later download.
 - Optional sending by email as PDF attachment as soon as a participant meets the restrictions.
+- *Preview certificate* for teachers: opens the certificate with the teacher's own name and the
+  watermark "PREVIEW"; nothing is issued or stored.
 - Page *Issued certificates* for teachers: name, date of issue, code, time of the last email,
   download, sending by email and deletion of single certificates, plus a button to send the
   certificates to all participants who meet the restrictions.
@@ -55,6 +57,7 @@ Maintained by **Moodle in Niedersachsen e. V.**
 4. Optionally enable *Send certificate by email*.
 
 Participants who meet the restrictions see the button *Download certificate* on the activity page.
+Teachers check layout and texts with *Preview certificate* on the same page.
 
 ## Sending by email
 

@@ -71,6 +71,14 @@ if ($canreceive && issue_manager::can_receive($cm, (int) $USER->id)) {
 }
 
 if ($canviewreport) {
+    echo html_writer::div(
+        html_writer::link(
+            new moodle_url('/mod/participationcert/preview.php', ['id' => $cm->id]),
+            get_string('previewcertificate', 'participationcert'),
+            ['class' => 'btn btn-secondary', 'target' => '_blank']
+        ) . $OUTPUT->help_icon('previewcertificate', 'participationcert'),
+        'mb-3'
+    );
     $count = count(issue_manager::get_all((int) $instance->id));
     echo $OUTPUT->single_button(
         new moodle_url('/mod/participationcert/report.php', ['id' => $cm->id]),

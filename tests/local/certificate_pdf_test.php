@@ -61,6 +61,23 @@ final class certificate_pdf_test extends \advanced_testcase {
         $this->assertGreaterThanOrEqual(2, preg_match_all('#/Type\s*/Page[^s]#', $pdf));
     }
 
+    public function test_preview_has_a_watermark_and_issues_nothing(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course();
+        $teacher = $generator->create_and_enrol($course, 'editingteacher');
+        $instance = $generator->create_module('participationcert', ['course' => $course->id]);
+        $context = \context_module::instance($instance->cmid);
+
+        $preview = certificate_pdf::build_preview($instance, $course, $teacher, $context);
+
+        $this->assertStringStartsWith('%PDF-', $preview);
+        $this->assertMatchesRegularExpression('#/ca 0\.15#', $preview);
+        $this->assertSame(0, $DB->count_records('participationcert_issues'));
+    }
+
     public function test_clean_topics_keeps_text_formatting_and_drops_images_links_and_attributes(): void {
         $html = '<p style="color:red" onclick="x()">Intro <img src="file:///etc/passwd"> <a href="https://example.org">Link</a></p>'
             . '<table><tr><td>Zelle</td></tr></table><ul class="x"><li><strong>Fett</strong></li></ul>';

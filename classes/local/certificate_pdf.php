@@ -72,6 +72,7 @@ class certificate_pdf {
      * @param stdClass $user Recipient with name fields.
      * @param stdClass $issue Issue record.
      * @param context_module $context Module context.
+     * @param bool $preview Print a watermark that marks the PDF as preview.
      * @return string PDF content.
      */
     public static function build(
@@ -79,7 +80,8 @@ class certificate_pdf {
         stdClass $course,
         stdClass $user,
         stdClass $issue,
-        context_module $context
+        context_module $context,
+        bool $preview = false
     ): string {
         global $CFG, $SITE;
         require_once($CFG->libdir . '/pdflib.php');
@@ -144,7 +146,29 @@ class certificate_pdf {
         }
 
         self::footer($pdf, $issue, $width);
+        if ($preview) {
+            self::watermark($pdf);
+        }
         return $pdf->Output('', 'S');
+    }
+
+    /**
+     * Returns the PDF a teacher sees as preview, with the teacher's name and a watermark.
+     *
+     * No certificate is issued and nothing is stored.
+     *
+     * @param stdClass $instance Instance record.
+     * @param stdClass $course Course record.
+     * @param stdClass $user User who requests the preview.
+     * @param context_module $context Module context.
+     * @return string PDF content.
+     */
+    public static function build_preview(stdClass $instance, stdClass $course, stdClass $user, context_module $context): string {
+        $issue = (object) [
+            'code' => str_repeat('X', issue_manager::CODE_LENGTH),
+            'timecreated' => time(),
+        ];
+        return self::build($instance, $course, $user, $issue, $context, true);
     }
 
     /**
@@ -266,6 +290,28 @@ class certificate_pdf {
         [$width, $height] = $size;
         $scale = min(self::LOGO_MAX_WIDTH / $width, self::LOGO_MAX_HEIGHT / $height);
         return [$width * $scale, $height * $scale];
+    }
+
+    /**
+     * Prints the preview watermark diagonally across every page.
+     *
+     * @param \pdf $pdf PDF document.
+     * @return void
+     */
+    private static function watermark(\pdf $pdf): void {
+        $text = get_string('pdf:preview', 'participationcert');
+        for ($page = 1; $page <= $pdf->getNumPages(); $page++) {
+            $pdf->setPage($page);
+            $pdf->SetAlpha(0.15);
+            $pdf->SetTextColor(200, 0, 0);
+            $pdf->SetFont(self::FONT, 'B', 90);
+            $pdf->StartTransform();
+            $pdf->Rotate(55, self::PAGE_WIDTH / 2, self::PAGE_HEIGHT / 2);
+            $pdf->SetXY(0, self::PAGE_HEIGHT / 2 - 20);
+            $pdf->Cell(self::PAGE_WIDTH, 40, $text, 0, 0, 'C');
+            $pdf->StopTransform();
+            $pdf->SetAlpha(1);
+        }
     }
 
     /**

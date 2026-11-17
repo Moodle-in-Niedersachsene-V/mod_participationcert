@@ -27,8 +27,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_participationcert';
-$plugin->version = 2026111702;
-$plugin->release = '0.2.1';
+$plugin->version = 2026111703;
+$plugin->release = '0.3.0';
 $plugin->requires = 2025041400;
 $plugin->supported = [500, 503];
 $plugin->maturity = MATURITY_BETA;
