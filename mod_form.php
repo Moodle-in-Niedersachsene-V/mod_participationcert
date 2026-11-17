@@ -69,7 +69,7 @@ class mod_participationcert_mod_form extends moodleform_mod {
             'editor',
             'topicseditor',
             get_string('topics', 'participationcert'),
-            ['rows' => 8],
+            ['rows' => 20],
             ['maxfiles' => 0, 'context' => $this->context]
         );
         $mform->setType('topicseditor', PARAM_RAW);

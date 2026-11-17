@@ -46,8 +46,14 @@ class certificate_pdf {
     /** @var string Font that covers German umlauts. */
     private const FONT = 'freesans';
 
-    /** @var int[] Colour of title and frame (dark blue). */
+    /** @var int[] Colour of the title (dark blue). */
     private const ACCENT = [31, 56, 100];
+
+    /** @var int[] Colour of the thick outer frame (orange of the association logo, #f98012). */
+    private const FRAME_OUTER = [249, 128, 18];
+
+    /** @var int[] Colour of the thin inner frame (#d9d4ce). */
+    private const FRAME_INNER = [217, 212, 206];
 
     /** @var float Top edge of the logo in millimetres. */
     private const LOGO_TOP = 22.0;
@@ -321,9 +327,10 @@ class certificate_pdf {
      * @return void
      */
     private static function frame(\pdf $pdf): void {
-        $pdf->SetDrawColor(...self::ACCENT);
+        $pdf->SetDrawColor(...self::FRAME_OUTER);
         $pdf->SetLineWidth(1.2);
         $pdf->Rect(10, 10, self::PAGE_WIDTH - 20, self::PAGE_HEIGHT - 20);
+        $pdf->SetDrawColor(...self::FRAME_INNER);
         $pdf->SetLineWidth(0.3);
         $pdf->Rect(13, 13, self::PAGE_WIDTH - 26, self::PAGE_HEIGHT - 26);
     }
